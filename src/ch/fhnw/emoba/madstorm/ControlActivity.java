@@ -26,7 +26,7 @@ import ch.fhnw.emoba.madstorm.controller.TouchController;
 public class ControlActivity extends Activity {
 
 	private Controller controller;
-	private ControlThread drawer;
+	private ControlThread controlThread;
 	private List<ControllerListener> controllerListeners = new ArrayList<ControllerListener>(2);
 	
 	@Override
@@ -44,13 +44,13 @@ public class ControlActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 		
-		drawer = new ControlThread(controller, controllerListeners);
-		drawer.start();
+		controlThread = new ControlThread(controller, controllerListeners);
+		controlThread.start();
 	}
 	
 	@Override
 	protected void onStop() {
-		drawer.stopDrawing();
+		controlThread.stopDrawing();
 		super.onStop();
 	}
 
@@ -134,7 +134,7 @@ public class ControlActivity extends Activity {
 	
 	private static final class ControlThread extends Thread {
 
-		private static final int DRAWER_WAITTIME = 10;
+		private static final int CONTROL_WAITTIME = 10;
 		private static final String LOG_NAME = "Control thread";
 		
 		private final Controller controller;
@@ -162,7 +162,7 @@ public class ControlActivity extends Activity {
 						}
 					}
 					
-					Thread.sleep(DRAWER_WAITTIME); // reduce CPU pressure
+					Thread.sleep(CONTROL_WAITTIME); // reduce CPU pressure
 				} catch (InterruptedException ex) {
 					stopDrawing();
 				}
