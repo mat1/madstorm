@@ -1,11 +1,14 @@
 package ch.fhnw.emoba.madstorm;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Build;
+import android.os.Bundle;
 import android.view.Menu;
 
 public class MainActivity extends Activity {
 
+	public static final boolean IS_EMULATED = Build.PRODUCT.startsWith("sdk");
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
