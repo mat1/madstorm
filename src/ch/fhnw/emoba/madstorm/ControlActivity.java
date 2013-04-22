@@ -3,6 +3,10 @@ package ch.fhnw.emoba.madstorm;
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,7 +26,7 @@ public class ControlActivity extends Activity {
 	private SurfaceHolder holder;
 	
 	private ControlState state;
-	private ControlDrawer drawer;
+	private ControlThread drawer;
 	
 
 	@Override
@@ -40,7 +44,7 @@ public class ControlActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 		
-		drawer = new ControlDrawer(holder, state);
+		drawer = new ControlThread(holder, state);
 		drawer.start();
 	}
 	
@@ -77,8 +81,56 @@ public class ControlActivity extends Activity {
 		});
 	}
 
-	private static final class ControlDrawer extends Thread {
+	private static final class SensorHandler implements SensorEventListener {
+		private final SensorManager manager;
+		private final ControlState toUpdate;
+		
+		private final float[] valuesMagnet      = new float[3];
+        private final float[] valuesAccel       = new float[3];
+        private final float[] valuesOrientation = new float[3];
+        private final float[] rotationMatrix    = new float[9];
+		
+		public SensorHandler(SensorManager manager, ControlState toUpdate) {
+			this.toUpdate = toUpdate;
+			this.manager = manager;
+			registerAsListenerAt(this.manager);
+		}
 
+		private void registerAsListenerAt(SensorManager manager) {
+			manager.registerListener(this, manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+			manager.registerListener(this, manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_NORMAL);
+		}
+		
+		@Override
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+			
+		}
+
+		@Override
+		public void onSensorChanged(SensorEvent event) {
+			switch (event.sensor.getType()) {
+            case Sensor.TYPE_ACCELEROMETER:
+                System.arraycopy(event.values, 0, valuesAccel, 0, 3);
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                System.arraycopy(event.values, 0, valuesMagnet, 0, 3);
+                break;
+			}
+		}
+		
+		public float[] getCurrentOrientation() {
+			SensorManager.getRotationMatrix(rotationMatrix, null, valuesAccel, valuesMagnet);
+            SensorManager.getOrientation(rotationMatrix, valuesOrientation);
+            
+            float[] ret = new float[3];
+            System.arraycopy(valuesOrientation, 0, ret, 0, 3);
+            return ret;
+		}
+	}
+	
+	private static final class ControlThread extends Thread {
+
+		private static final int DRAWER_WAITTIME = 10;
 		private final SurfaceHolder holder;
 		private final ControlState state;
 		private final Paint green;
@@ -86,7 +138,7 @@ public class ControlActivity extends Activity {
 
 		private volatile boolean running = true;
 		
-		public ControlDrawer(SurfaceHolder holder, ControlState state) {
+		public ControlThread(SurfaceHolder holder, ControlState state) {
 			this.holder = holder;
 			this.state = state;
 			this.green = new Paint();
@@ -107,7 +159,7 @@ public class ControlActivity extends Activity {
 					c = holder.lockCanvas();
 					if(c != null) draw(c);
 					
-					Thread.sleep(20); // reduce CPU pressure
+					Thread.sleep(DRAWER_WAITTIME); // reduce CPU pressure
 				} catch (InterruptedException ex) {
 					stopDrawing();
 				} finally {
