@@ -3,6 +3,9 @@
 
     <string name="app_name">madstorm</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="connect">CONNECT</string>
+    <string name="starting_image_desc">Starting image</string>
+    <string name="title_activity_control">ControlActivity</string>
+    <string name="action">SHOOT!</string>
 
 </resources>
