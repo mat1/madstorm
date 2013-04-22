@@ -25,7 +25,8 @@
         <activity
             android:name="ch.fhnw.emoba.madstorm.ControlActivity"
             android:label="@string/title_activity_control" 
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">>
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="ch.fhnw.emoba.madstorm.CONTROL_DEVICE" />
                 <category android:name="android.intent.category.DEFAULT" />
