@@ -27,7 +27,7 @@ public class ControlActivity extends Activity {
 
 	private Controller controller;
 	private ControlThread drawer;
-	private List<ControllerListener> positionListeners = new ArrayList<ControllerListener>(2);
+	private List<ControllerListener> controllerListeners = new ArrayList<ControllerListener>(2);
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class ControlActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 		
-		drawer = new ControlThread(controller, positionListeners);
+		drawer = new ControlThread(controller, controllerListeners);
 		drawer.start();
 	}
 	
@@ -82,7 +82,7 @@ public class ControlActivity extends Activity {
 	}
 	
 	private void setupControllerListeners() {
-		positionListeners.add(new SurfaceDrawer(((SurfaceView) findViewById(R.id.controlSurface)).getHolder()));
+		controllerListeners.add(new SurfaceDrawer(((SurfaceView) findViewById(R.id.controlSurface)).getHolder()));
 	}
 	
 	private static final class SurfaceDrawer implements ControllerListener {
