@@ -9,9 +9,9 @@ public class SensorController implements Controller, SensorEventListener {
 	private final SensorManager manager;
 	
 	private final float[] valuesMagnet      = new float[3];
-    private final float[] valuesAccel       = new float[3];
-    private final float[] valuesOrientation = new float[3];
-    private final float[] rotationMatrix    = new float[9];
+	private final float[] valuesAccel       = new float[3];
+	private final float[] valuesOrientation = new float[3];
+	private final float[] rotationMatrix    = new float[9];
 	
 	public SensorController(SensorManager manager) {
 		this.manager = manager;
