@@ -50,7 +50,7 @@ public class ControlActivity extends Activity {
 	
 	@Override
 	protected void onStop() {
-		controlThread.stopDrawing();
+		controlThread.shutdown();
 		super.onStop();
 	}
 
@@ -164,13 +164,13 @@ public class ControlActivity extends Activity {
 					
 					Thread.sleep(CONTROL_WAITTIME); // reduce CPU pressure
 				} catch (InterruptedException ex) {
-					stopDrawing();
+					shutdown();
 				}
 			}
 			Log.v(LOG_NAME, "Control thread  stopped");
 		}
 
-		public void stopDrawing() {
+		public void shutdown() {
 			running = false;
 		}
 		
