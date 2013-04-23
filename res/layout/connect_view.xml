@@ -16,7 +16,7 @@
         android:layout_alignParentTop="true"
         android:contentDescription="@string/starting_image_desc"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/text_welcome" />
 
     <Button
         android:id="@+id/connect_button"
