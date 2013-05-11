@@ -57,8 +57,10 @@ public class ConnectActivity extends ListActivity {
 
 	private RobotDetector getRobotDetector() {
 		if(MainActivity.IS_EMULATED) {
+			Log.v(ACTIVITY_NAME, "Dummy detector chosen");
 			return new DummyRobotDetector();
 		} else {
+			Log.v(ACTIVITY_NAME, "Bluetooth detector chosen");
 			BluetoothDetector detector = new BluetoothDetector();
 			if(!detector.isBluetoothSupported()) {
 				Toast.makeText(getApplicationContext(), "Bluetooth not supported", Toast.LENGTH_LONG).show();
