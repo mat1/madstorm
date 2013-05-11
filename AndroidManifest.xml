@@ -24,11 +24,21 @@
         </activity>
         <activity
             android:name="ch.fhnw.emoba.madstorm.ControlActivity"
-            android:label="@string/title_activity_control" 
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:screenOrientation="portrait">
+            android:label="@string/title_activity_control"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="ch.fhnw.emoba.madstorm.CONTROL_DEVICE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="ch.fhnw.emoba.madstorm.ConnectActivity"
+            android:label="@string/title_activity_connect" >
+            <intent-filter>
+                <action android:name="ch.fhnw.emoba.madstorm.SELECT_DEVICE" />
+                
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

@@ -1,7 +1,6 @@
 package ch.fhnw.emoba.madstorm;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,26 +31,7 @@ public class MainActivity extends Activity {
 
 	private void deviceConnectRequested() {
 		Log.v(ACTIVITY_NAME, "CONNECT REQUESTED");
-		startActivityForResult(Intents.CONTROL_DEVICE, RequestCodes.REQUEST_CONNECT_DEVICE);
-	}
-	
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch(requestCode) {
-		case RequestCodes.REQUEST_CONNECT_DEVICE:
-			switch(resultCode) {
-			case RESULT_CANCELED:
-				Log.i(ACTIVITY_NAME, "Request: " + requestCode + " cancelled");
-				break;
-			case RESULT_OK:
-				if(IS_EMULATED) {
-//					setContentView(controlView);
-				} else {
-					// TODO connect to NXT
-				}
-			}
-			break;
-		}
+		startActivity(Intents.SELECT_DEVICE);
 	}
 	
 	private void registerListeners() {
@@ -61,10 +41,6 @@ public class MainActivity extends Activity {
 				deviceConnectRequested();
 			}
 		});
-	}
-	
-	public static class RequestCodes {
-		public static final int REQUEST_CONNECT_DEVICE = 1;
 	}
 	
 }

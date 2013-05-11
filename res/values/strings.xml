@@ -7,5 +7,7 @@
     <string name="starting_image_desc">Starting image</string>
     <string name="title_activity_control">ControlActivity</string>
     <string name="action">SHOOT!</string>
+    <string name="title_activity_connect">Select your robot</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
