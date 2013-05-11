@@ -4,7 +4,6 @@ import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,9 +45,7 @@ public class ConnectActivity extends ListActivity {
 	
 	@Override
 	public void onListItemClick(ListView l, View v, int pos, long id) {
-		Intent intent = new Intent(Intents.CONTROL_DEVICE);
-		intent.putExtra("MAC", devicesAdapter.getItem(pos).getMac());
-		startActivity(intent);
+		startActivity(Intents.createControlDeviceIntent(devicesAdapter.getItem(pos).getMac()));
 	}
 	
 	private void loadRobots() {
