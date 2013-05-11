@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +12,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,8 +25,7 @@ public class ConnectActivity extends ListActivity {
 	public static final String ACTIVITY_NAME = MainActivity.class.getSimpleName();
 	
 	private RobotDetector detector;
-	private ListAdapter devicesAdapter;
-	
+	private LegoDeviceListAdapter devicesAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +46,9 @@ public class ConnectActivity extends ListActivity {
 	
 	@Override
 	public void onListItemClick(ListView l, View v, int pos, long id) {
-		startActivity(Intents.CONTROL_DEVICE);
+		Intent intent = new Intent(Intents.CONTROL_DEVICE);
+		intent.putExtra("MAC", devicesAdapter.getItem(pos).getMac());
+		startActivity(intent);
 	}
 	
 	private void loadRobots() {

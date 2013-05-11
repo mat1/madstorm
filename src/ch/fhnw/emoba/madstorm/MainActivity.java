@@ -1,6 +1,7 @@
 package ch.fhnw.emoba.madstorm;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +32,7 @@ public class MainActivity extends Activity {
 
 	private void deviceConnectRequested() {
 		Log.v(ACTIVITY_NAME, "CONNECT REQUESTED");
-		startActivity(Intents.SELECT_DEVICE);
+		startActivity(new Intent(Intents.SELECT_DEVICE));
 	}
 	
 	private void registerListeners() {
