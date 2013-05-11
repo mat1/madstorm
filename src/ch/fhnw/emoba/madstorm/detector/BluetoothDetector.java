@@ -17,7 +17,7 @@ public class BluetoothDetector implements RobotDetector {
 	public List<LegoDevice> getConnectedLegoDevices() {
 		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 		if(adapter == null) {
-			Log.w(getClass().getName(), "Bluetooth not supported");
+			Log.w(getClass().getSimpleName(), "Bluetooth not supported");
 			return Collections.emptyList();
 		}
 		

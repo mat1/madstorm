@@ -25,7 +25,7 @@ import ch.fhnw.emoba.madstorm.controller.TouchController;
 
 public class ControlActivity extends Activity {
 
-	public static final String ACTIVITY_NAME = MainActivity.class.getSimpleName();
+	public static final String ACTIVITY_NAME = ControlActivity.class.getSimpleName();
 	
 	private String address;
 	private Controller controller;
@@ -43,6 +43,8 @@ public class ControlActivity extends Activity {
 			Log.e(ACTIVITY_NAME, "No MAC address provided.");
 			throw new RuntimeException("Intent has to provice MAC address as MAC in extras!");
 		}
+		
+		Log.v(ACTIVITY_NAME, "Connecting to: " + address);
 		
 		registerListeners();
 		setupController();

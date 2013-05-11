@@ -21,7 +21,7 @@ import ch.fhnw.emoba.madstorm.detector.RobotDetector.LegoDevice;
 
 public class ConnectActivity extends ListActivity {
 
-	public static final String ACTIVITY_NAME = MainActivity.class.getSimpleName();
+	public static final String ACTIVITY_NAME = ConnectActivity.class.getSimpleName();
 	
 	private RobotDetector detector;
 	private LegoDeviceListAdapter devicesAdapter;
