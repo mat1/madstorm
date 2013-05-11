@@ -14,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import ch.fhnw.emoba.madstorm.detector.BluetoothDetector;
 import ch.fhnw.emoba.madstorm.detector.DummyRobotDetector;
 import ch.fhnw.emoba.madstorm.detector.RobotDetector;
@@ -23,7 +24,7 @@ public class ConnectActivity extends ListActivity {
 
 	public static final String ACTIVITY_NAME = MainActivity.class.getSimpleName();
 	
-	private final RobotDetector detector = getRobotDetector();
+	private RobotDetector detector;
 	private ListAdapter devicesAdapter;
 	
 	
@@ -31,6 +32,7 @@ public class ConnectActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		detector = getRobotDetector();
 		loadRobots();
 		
 		setListAdapter(devicesAdapter);
@@ -48,7 +50,6 @@ public class ConnectActivity extends ListActivity {
 		startActivity(Intents.CONTROL_DEVICE);
 	}
 	
-	
 	private void loadRobots() {
 		Log.v(ACTIVITY_NAME, "Loading devices");
 		devicesAdapter = new LegoDeviceListAdapter(this, detector.getConnectedLegoDevices());
@@ -58,7 +59,11 @@ public class ConnectActivity extends ListActivity {
 		if(MainActivity.IS_EMULATED) {
 			return new DummyRobotDetector();
 		} else {
-			return new BluetoothDetector();
+			BluetoothDetector detector = new BluetoothDetector();
+			if(!detector.isBluetoothSupported()) {
+				Toast.makeText(getApplicationContext(), "Bluetooth not supported", Toast.LENGTH_LONG).show();
+			}
+			return detector;
 		}
 	}
 	
