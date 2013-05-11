@@ -16,12 +16,14 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.Toast;
 import ch.fhnw.emoba.madstorm.controller.Controller;
 import ch.fhnw.emoba.madstorm.controller.Controller.Position;
 import ch.fhnw.emoba.madstorm.controller.ControllerListener;
 import ch.fhnw.emoba.madstorm.controller.SensorController;
 import ch.fhnw.emoba.madstorm.controller.TouchController;
+import ch.fhnw.emoba.madstorm.robothandler.LogRobotHandler;
+import ch.fhnw.emoba.madstorm.robothandler.NXTRobotHandler;
+import ch.fhnw.emoba.madstorm.robothandler.RobotHandler;
 
 public class ControlActivity extends Activity {
 
@@ -31,6 +33,8 @@ public class ControlActivity extends Activity {
 	private Controller controller;
 	private ControlThread controlThread;
 	private List<ControllerListener> controllerListeners = new ArrayList<ControllerListener>(2);
+	private RobotHandler robot;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +49,19 @@ public class ControlActivity extends Activity {
 		}
 		
 		Log.v(ACTIVITY_NAME, "Connecting to: " + address);
+		robot = getRobotHandler();
 		
 		registerListeners();
 		setupController();
 		setupControllerListeners();
+	}
+
+	private RobotHandler getRobotHandler() {
+		if(MainActivity.IS_EMULATED) {
+			return new LogRobotHandler();
+		} else {
+			return new NXTRobotHandler(getApplicationContext(), address);
+		}
 	}
 
 	@Override
@@ -72,7 +85,7 @@ public class ControlActivity extends Activity {
 	}
 
 	public void shoot() {
-		Toast.makeText(getApplicationContext(), "Ball shot!", Toast.LENGTH_SHORT).show();
+		robot.shoot();
 	}
 
 	private void registerListeners() {
@@ -94,6 +107,22 @@ public class ControlActivity extends Activity {
 	
 	private void setupControllerListeners() {
 		controllerListeners.add(new SurfaceDrawer(((SurfaceView) findViewById(R.id.controlSurface)).getHolder()));
+		controllerListeners.add(new RobotHandlerUpdater(robot));
+	}
+	
+	private static final class RobotHandlerUpdater implements ControllerListener {
+
+		private final RobotHandler handler;
+		
+		public RobotHandlerUpdater(RobotHandler handler) {
+			this.handler = handler;
+		}
+		
+		@Override
+		public void update(Position position) {
+			handler.setVelocity(position.x, position.y);
+		}
+		
 	}
 	
 	private static final class SurfaceDrawer implements ControllerListener {
