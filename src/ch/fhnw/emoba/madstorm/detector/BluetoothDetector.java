@@ -5,13 +5,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.util.Log;
 
 public class BluetoothDetector implements RobotDetector {
 
+	public static final int REQUEST_ENABLE_BT = 134;
 	public static final String LEGO_MAC_START = "00:16:53"; 
+	
+	private final Activity context;
+	
+	public BluetoothDetector(Activity context) {
+		this.context = context;
+	}
 	
 	@Override
 	public List<LegoDevice> getConnectedLegoDevices() {
@@ -20,8 +29,12 @@ public class BluetoothDetector implements RobotDetector {
 			Log.w(getClass().getSimpleName(), "Bluetooth not supported");
 			return Collections.emptyList();
 		}
-		
-		return fromBluetoothDevices(adapter.getBondedDevices());
+
+		if(ensureBluetoothEnabled(adapter)) {
+			return fromBluetoothDevices(adapter.getBondedDevices());
+		} else {
+			return Collections.emptyList();
+		}
 	}
 
 	private List<LegoDevice> fromBluetoothDevices(Set<BluetoothDevice> bdevs) {
@@ -34,5 +47,15 @@ public class BluetoothDetector implements RobotDetector {
 	
 	public boolean isBluetoothSupported() {
 		return BluetoothAdapter.getDefaultAdapter() != null;
+	}
+	
+	private boolean ensureBluetoothEnabled(BluetoothAdapter adapter) {
+		if(!adapter.isEnabled()) {
+			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+		    context.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+		    return false;
+		} else {
+			return true;
+		}
 	}
 }

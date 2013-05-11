@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,8 +33,6 @@ public class ConnectActivity extends ListActivity {
 		
 		detector = getRobotDetector();
 		loadRobots();
-		
-		setListAdapter(devicesAdapter);
 	}
 
 	@Override
@@ -44,6 +43,21 @@ public class ConnectActivity extends ListActivity {
 	}
 	
 	@Override
+	public void onActivityResult (int requestCode, int resultCode, Intent data) {
+		switch(requestCode){
+		case BluetoothDetector.REQUEST_ENABLE_BT:
+			if(resultCode == RESULT_CANCELED) {
+				Log.w(ACTIVITY_NAME, "Bluethooth not enabled after request!");
+			} else if(resultCode == RESULT_OK) {
+				Log.v(ACTIVITY_NAME, "Bluethooth enabled after request!");
+				loadRobots();
+			}
+			break;
+		}
+	}
+	
+	
+	@Override
 	public void onListItemClick(ListView l, View v, int pos, long id) {
 		startActivity(Intents.createControlDeviceIntent(devicesAdapter.getItem(pos).getMac()));
 	}
@@ -51,6 +65,7 @@ public class ConnectActivity extends ListActivity {
 	private void loadRobots() {
 		Log.v(ACTIVITY_NAME, "Loading devices");
 		devicesAdapter = new LegoDeviceListAdapter(this, detector.getConnectedLegoDevices());
+		setListAdapter(devicesAdapter);
 	}
 
 	private RobotDetector getRobotDetector() {
@@ -59,7 +74,7 @@ public class ConnectActivity extends ListActivity {
 			return new DummyRobotDetector();
 		} else {
 			Log.v(ACTIVITY_NAME, "Bluetooth detector chosen");
-			BluetoothDetector detector = new BluetoothDetector();
+			BluetoothDetector detector = new BluetoothDetector(this);
 			if(!detector.isBluetoothSupported()) {
 				Toast.makeText(getApplicationContext(), "Bluetooth not supported", Toast.LENGTH_LONG).show();
 			}
