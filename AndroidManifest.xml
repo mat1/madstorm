@@ -27,7 +27,7 @@
         <activity
             android:name="ch.fhnw.emoba.madstorm.ControlActivity"
             android:label="@string/title_activity_control"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="ch.fhnw.emoba.madstorm.CONTROL_DEVICE" />

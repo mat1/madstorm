@@ -21,8 +21,10 @@ public class TouchController implements Controller, OnTouchListener {
 	@Override
 	public boolean onTouch(View view, MotionEvent event) {
 		SurfaceView sv = (SurfaceView)view;
-		curPos = new Position((int)event.getX()-sv.getWidth()/2, (int)event.getY()-sv.getHeight()/2);
+		curPos = new Position(
+					-(event.getX()-sv.getWidth()/2)/(sv.getWidth()/2),
+					-(event.getY()-sv.getHeight()/2)/(sv.getHeight()/2));
 		return true;
 	}
-
+	
 }

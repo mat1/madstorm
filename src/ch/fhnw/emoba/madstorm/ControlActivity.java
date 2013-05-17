@@ -11,10 +11,11 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import ch.fhnw.emoba.madstorm.controller.Controller;
 import ch.fhnw.emoba.madstorm.controller.Controller.Position;
@@ -34,7 +35,6 @@ public class ControlActivity extends Activity {
 	private ControlThread controlThread;
 	private List<ControllerListener> controllerListeners = new ArrayList<ControllerListener>(2);
 	private RobotHandler robot;
-	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +74,7 @@ public class ControlActivity extends Activity {
 	
 	@Override
 	protected void onStop() {
+		robot.close();
 		controlThread.shutdown();
 		super.onStop();
 	}
@@ -84,15 +85,23 @@ public class ControlActivity extends Activity {
 		return true;
 	}
 
-	public void shoot() {
-		robot.shoot();
+	public void startShoot() {
+		robot.startShoot();
 	}
 
+	public void stopShoot() {
+		robot.stopShoot();
+	}
+	
 	private void registerListeners() {
-		((Button) findViewById(R.id.shootButton)).setOnClickListener(new OnClickListener() {
+		((Button) findViewById(R.id.shootButton)).setOnTouchListener(new OnTouchListener() {
 			@Override
-			public void onClick(View view) {
-				shoot();
+			public boolean onTouch(View v, MotionEvent event) {
+				switch ( event.getAction() ) {
+			    case MotionEvent.ACTION_DOWN: startShoot();break;
+			    case MotionEvent.ACTION_UP: stopShoot(); break;
+			    }
+				return true;
 			}
 		});
 	}
@@ -168,7 +177,7 @@ public class ControlActivity extends Activity {
 		}
 		
 		private void drawPosition(Canvas c, Position pos) {
-			c.drawCircle(pos.x + c.getWidth()/2, pos.y + c.getHeight()/2, 10, green);
+			c.drawCircle((int) -(pos.x*c.getWidth()/2) + c.getWidth()/2, -(int)(pos.y*c.getHeight()/2) + c.getHeight()/2, 10, green);
 		}
 	}
 	
