@@ -26,5 +26,10 @@ public class TouchController implements Controller, OnTouchListener {
 					-(event.getY()-sv.getHeight()/2)/(sv.getHeight()/2));
 		return true;
 	}
+
+	@Override
+	public void close() {
+		
+	}
 	
 }

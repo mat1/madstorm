@@ -3,6 +3,7 @@ package ch.fhnw.emoba.madstorm.controller;
 public interface Controller {
 
 	public Position getPosition();
+	public void close();
 	
 	/**
 	 * Immutable value for a position.

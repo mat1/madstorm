@@ -4,14 +4,14 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 public class SensorController implements Controller, SensorEventListener {
+	private static final String LOG_NAME= SensorController.class.getSimpleName();
 	private final SensorManager manager;
-	
-	private final float[] valuesMagnet      = new float[3];
-	private final float[] valuesAccel       = new float[3];
-	private final float[] valuesOrientation = new float[3];
-	private final float[] rotationMatrix    = new float[9];
+	private final float[] magnet = new float[3];
+	private final float[] gravity = new float[3];
+	private final float[] tilt = new float[3];
 	
 	public SensorController(SensorManager manager) {
 		this.manager = manager;
@@ -19,8 +19,15 @@ public class SensorController implements Controller, SensorEventListener {
 	}
 
 	private void registerAsListenerAt(SensorManager manager) {
-		manager.registerListener(this, manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+		manager.registerListener(this, manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL);
 		manager.registerListener(this, manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_NORMAL);
+		Log.v(LOG_NAME, "Registered sensor listener");
+	}
+	
+	@Override
+	public void close() {
+		this.manager.unregisterListener(this);
+		Log.v(LOG_NAME, "Deregistered sensor listener");
 	}
 	
 	@Override
@@ -30,22 +37,27 @@ public class SensorController implements Controller, SensorEventListener {
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		switch (event.sensor.getType()) {
+		final float[] target;
+		switch(event.sensor.getType()) {
 		case Sensor.TYPE_ACCELEROMETER:
-			System.arraycopy(event.values, 0, valuesAccel, 0, 3);
+			target = gravity; 
 			break;
 		case Sensor.TYPE_MAGNETIC_FIELD:
-			System.arraycopy(event.values, 0, valuesMagnet, 0, 3);
+			target = magnet;
 			break;
+		default:
+			return;
 		}
+		System.arraycopy(event.values, 0, target, 0, 3);
 	}
 	
 	@Override
 	public Position getPosition() {
-		SensorManager.getRotationMatrix(rotationMatrix, null, valuesAccel, valuesMagnet);
-        SensorManager.getOrientation(rotationMatrix, valuesOrientation);
-        
-		return new Position(0,0); /* TODO calculate position from orientation */
+		float[] R = new float[9];
+		if(SensorManager.getRotationMatrix(R, null, gravity, magnet));
+			SensorManager.getOrientation(R, tilt);
+			
+		return new Position(tilt[1], tilt[2]); 
 	}
-
+	
 }

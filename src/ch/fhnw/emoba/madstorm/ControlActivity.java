@@ -75,6 +75,7 @@ public class ControlActivity extends Activity {
 	@Override
 	protected void onStop() {
 		robot.close();
+		controller.close();
 		controlThread.shutdown();
 		super.onStop();
 	}
